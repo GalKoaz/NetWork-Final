@@ -9,15 +9,16 @@
 #include <unistd.h>
 #include <stdio.h>
 
-/*
-void printsin(struct sockaddr_in *s, char *str1, char *str2) {
-  printf("%s\n", str1);
-  printf("%s: ", str2);
-  -- port: sin->sin_port (host integer type) 
-  -- IP: sin->sin_addr (IP in dotted-decimal notation) 
+
+void printsin(struct sockaddr_in *sin, char *pname, char *msg) {
+  printf("%s\n", pname);
+  printf("%s: ", msg);
+  printf("ip= %s, port= %d", inet_ntoa(sin->sin_addr), sin->sin_port);
+  //  -- port: sin->sin_port (host integer type)
+  //  -- IP: sin->sin_addr (IP in dotted-decimal notation)
   printf("\n");
 }
-*/
+
 
 int main(int argc, char *argv[]) {
     int socket_fd, cc, fsize;  // Socket number , cc , and file size
@@ -56,7 +57,7 @@ int main(int argc, char *argv[]) {
     * The htons() function translates a short integer from host byte order to network byte order.
      * Parameter Description a. The unsigned short integer to be put into network byte order. */
 
-    //printsin( &s_in, "RECV_UDP", "Local socket is:");
+    printsin( &s_in, "RECV_UDP", "Local socket is:");
     fflush(stdout);
     /* fflush(stdout) is typically used for output stream only. Its purpose is to clear (or flush)
      * the output buffer and move the buffered data to console (in case of stdout)
@@ -75,7 +76,7 @@ int main(int argc, char *argv[]) {
          * and may be used to receive data on a socket whether or not it is connection-oriented.
          */
 
-        //printsin( &from, "recv_udp: ", "Packet from:");
+        printsin( &from, "recv_udp: ", "Packet from:");
         printf("Got data ::%c%ld%c\n", msg.head, (long) ntohl(msg.body), msg.tail);
         // print "Got data::< id process >"
 
