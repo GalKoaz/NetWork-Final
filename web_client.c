@@ -1,3 +1,7 @@
+//
+// Created by gal on 5/18/22.
+//
+
 
 #include <sys/types.h>
 #include <unistd.h>
@@ -15,24 +19,48 @@
 #define IP_ADDRESS "127.0.0.1"
 #define PORT 3333
 
-int main(int argc, char* argv[]) {
+
+int main(int argc, char *argv[]) {
     int sock;
     struct sockaddr_in cli_name;
     int count;
     int value;
 
-    struct addrinfo* res;
-    char* hostname;
-    char* hostaddr;
-    struct sockaddr_in* saddr;
+    struct addrinfo *res;
+    char *hostname;
+    char *hostaddr;
+    struct sockaddr_in *saddr;
+
+    char ip[100];
+    int port = -1;
+    char path[100];
+    char *url;
+
 
     if (argc != 2) {
         perror("Usage: client <hostname>\n");
         exit(1);
     }
 
-    hostname = argv[1];
 
+    //hostname = argv[1];
+    url = argv[1];
+    int flag = 0;
+    int scan = -1;
+    int counter = 0;
+    for (int i = 0; i < sizeof(url) / sizeof(int); ++i) {
+        if (url[i] == ':') {
+            counter++;
+            if(counter == 2){
+                flag = 1;
+                scan = sscanf(url, "%*[^:]%*[:/]%[^:]:%d%s", ip, &port, path);
+                break;
+            }
+        }
+    }
+    if(counter != 2){
+
+    }
 
     printf("Client is alive and establishing socket connection.\n");
 
@@ -50,14 +78,14 @@ int main(int argc, char* argv[]) {
     }
 
 
-    saddr = (struct sockaddr_in*)res->ai_addr;
+    saddr = (struct sockaddr_in *) res->ai_addr;
     hostaddr = inet_ntoa(saddr->sin_addr);
 
 
     bzero(&cli_name, sizeof(cli_name));
     cli_name.sin_family = AF_INET;
-    cli_name.sin_addr.s_addr = inet_addr(hostaddr);
-    cli_name.sin_port = htons(PORT);
+    cli_name.sin_addr.s_addr = inet_addr(ip);
+    cli_name.sin_port = htons(port);
 
 
     if (connect(sock, (struct sockaddr *) &cli_name, sizeof(cli_name)) < 0) {
@@ -66,6 +94,8 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
+    printf("GET %s HTTP/1.0\n",url);
+    printf("HOST: %s\n\n",ip);
 
     for (count = 1; count <= SIM_LENGTH; count++) {
         read(sock, &value, 4);
@@ -76,5 +106,4 @@ int main(int argc, char* argv[]) {
 
     close(sock);
     exit(0);
-
-} 
+}

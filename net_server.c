@@ -8,7 +8,8 @@
 #include <sys/un.h>
 #include <netinet/in.h>
 
-#define PORT 9999
+#define SIM_LENGTH 10
+#define PORT 3333
 
 int main(void)
 { 
@@ -26,13 +27,13 @@ int main(void)
 
   bind(sock, (struct sockaddr *)&serv_name, sizeof(serv_name));
           
-  listen(sock, 1); 
+  listen(sock, 1);
 
   len = sizeof(serv_name);
   
   connect_sock = accept(sock, (struct sockaddr *)&serv_name, &len);
 
-  for (count = 1; count <= SIM_LENGTH; count++)
+    for (count = 1; count <= SIM_LENGTH; count++)
     { write(connect_sock, &count, 4);
       printf("Server has written %d to socket.\n", count);
     }
