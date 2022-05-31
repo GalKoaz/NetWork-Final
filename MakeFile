@@ -1,0 +1,33 @@
+all: project
+
+web: web_client.c
+	gcc -o web web_client.c
+
+source: source.c
+	gcc -o source source.c
+
+gateway: gateway.c
+	gcc -o gateway gateway.c
+
+sink: sink.c
+	gcc -o sink sink.c
+
+recv: recv_udp.c
+	gcc -o recv recv_udp.c
+
+send: send_udp.c
+	gcc -o send send_udp.c
+
+server: net_server.c
+	gcc -o net_server net_server.c
+
+client: net_client.c
+	gcc -o net_client net_client.c
+
+ns: nslookup.c
+	gcc -o nslookup nslookup.c
+
+PartB: source gateway sink
+
+clean:
+	rm -f *.o project web source gateway sink recv send server client ns

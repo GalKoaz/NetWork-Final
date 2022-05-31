@@ -9,15 +9,12 @@
 #include <unistd.h>
 #include <stdio.h>
 
-#define PORT 3333
+#define PORT2 3334
 
 void printsin(struct sockaddr_in *sin, char *pname, char *msg) {
     printf("%s\n", pname);
     printf("%s: ", msg);
     printf("ip= %s, port= %d", inet_ntoa(sin->sin_addr), sin->sin_port);
-
-    // -- port: sin->sin_port (host integer type)
-    // -- IP: sin->sin_addr (IP in dotted-decimal notation)
     printf("\n");
 }
 
@@ -39,7 +36,7 @@ int main(int argc, char *argv[]) {
 
     s_in.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    s_in.sin_port = htons(PORT);
+    s_in.sin_port = htons(PORT2);
 
     printsin(&s_in, "RECV_UDP", "Local socket is:");
     fflush(stdout);
@@ -52,8 +49,8 @@ int main(int argc, char *argv[]) {
         recvfrom(socket_fd, &msg, sizeof(msg), 0, (struct sockaddr *) &from, &fsize);
 
         printsin(&from, "recv_udp: ", "Packet from:");
-        printf("Got data ::%c%ld%c\n", msg.head, (long) ntohl(msg.body), msg.tail);
-
+        printf("Got data ::%c%ld%c\n", msg.head, (long) htonl(msg.body), msg.tail);
+        printf("ID Process ::%c%ld%c\n", msg.head, (long) getpid(), msg.tail);
         fflush(stdout);
     }
 

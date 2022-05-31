@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
 
     /* Check if the User enter Url in the commend-line */
     if (argc != 2) {
-        perror("Usage: Web Url form ex. \"http://google.com\"\n");
+        perror("Usage: Web URL form ex. http://google.com\n");
         exit(1);
     }
 
