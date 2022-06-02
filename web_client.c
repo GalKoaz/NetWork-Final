@@ -113,7 +113,6 @@ int main(int argc, char *argv[]) {
     printf("%s\n", http_query);
     int sent = 0;
     do {
-        printf("Write\n");
         bytes = write(sock, http_query + sent, total - sent);
         if (bytes < 0) {
             perror("Error writing message to socket");

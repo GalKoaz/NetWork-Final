@@ -1,4 +1,4 @@
-all: project
+all: web source gateway sink recv server client ns
 
 web: web_client.c
 	gcc -o web web_client.c
@@ -19,15 +19,21 @@ send: send_udp.c
 	gcc -o send send_udp.c
 
 server: net_server.c
-	gcc -o net_server net_server.c
+	gcc -o server net_server.c
 
 client: net_client.c
-	gcc -o net_client net_client.c
+	gcc -o client net_client.c
 
 ns: nslookup.c
 	gcc -o nslookup nslookup.c
 
-PartB: source gateway sink
+Problem1: recv send
+
+Problem2: source gateway sink
+
+PartA: server client ns
+
+PartB: web
 
 clean:
-	rm -f *.o project web source gateway sink recv send server client ns
+	rm -f *.o web source gateway sink recv send server client nslookup

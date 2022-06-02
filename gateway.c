@@ -34,28 +34,33 @@ int main(int argc, char *argv[]) {
     /* The gethostbyname() function returns a structure of type hostent for the given host name. */
     hostptr = gethostbyname(argv[1]);
 
-
+    /********************* Destination *********************/
     dest.sin_family = (short) AF_INET;
+    /*copies n bytes from src to dest. */
     bcopy(hostptr->h_addr, (char *) &dest.sin_addr, hostptr->h_length);
     dest.sin_port = htons(PORT2);
 
+    /********************** Incoming **********************/
     s_in.sin_family = (short) AF_INET;
-    s_in.sin_addr.s_addr = htonl(INADDR_ANY);
-    s_in.sin_port = htons(PORT);
+    s_in.sin_addr.s_addr = htonl(INADDR_ANY);  // accept any address
+    s_in.sin_port = htons(PORT);  // the port we choose
 
-
+    /* binds a unique local name to the socket */
     bind(socket_sc, (struct sockaddr *) &s_in, sizeof(s_in));
 
-    srandom(333);
+    srandom(333); // seed random for random()
+
     for (;;) {
         fsize = sizeof(from);
+        /* recvfrom from the Incoming to fill the message buffer */
         recvfrom(socket_sc, &msgbuf, sizeof(msgbuf), 0, (struct sockaddr *) &from, &fsize);
-        //printf("%f\n",((float) random()) / ((float) RAND_MAX));
-        float rand = (((float) random()) / ((float) RAND_MAX));
+        float rand = (((float) random()) / ((float) RAND_MAX)); // random value
         if (rand > 0.5) {
-            printf("Value Random: %f > 0.5\n",rand);
-            printf("Got data ::%c%ld%c\n", msgbuf.head, (long) htonl(msgbuf.body), msgbuf.tail);
-            printf("ID Process ::%c%ld%c\n", msgbuf.head, (long) getpid(), msgbuf.tail);
+            printf("Random variable ::%f > 0.5\n",rand);  // print the random variable
+            printf("Got data ::%c%ld%c\n", msgbuf.head, (long) htonl(msgbuf.body), msgbuf.tail); // int
+            printf("ID process ::%c%ld%c\n", msgbuf.head, (long) getpid(), msgbuf.tail); // ID Process
+
+            /* Send the message buffer to the Destination*/
             sendto(socket_ds, &msgbuf, sizeof(msgbuf), 0, (struct sockaddr *) &dest, sizeof(dest));
         }
     }
